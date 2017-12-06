@@ -80,6 +80,14 @@ typedef NS_ENUM(NSInteger, HysteriaPlayerFailed) {
 - (NSURL *)hysteriaPlayerURLForItemAtIndex:(NSInteger)index preBuffer:(BOOL)preBuffer;
 
 /**
+ * Source AVplayer item provider if you need to to control auth headers
+ *  @param index     index of the item
+ *
+ *  @return AVPlayerItem
+ */
+- (AVPlayerItem*) hysteriaPlayerItemAtIndex:(NSInteger)index;
+
+/**
  *  Source URL provider, would excute until you call setupPlayerItemWithUrl:index:
  *
  *  @param index     index of the item

@@ -301,7 +301,12 @@ static dispatch_once_t onceToken;
         });
     } else if ([self.datasource respondsToSelector:@selector(hysteriaPlayerAsyncSetUrlForItemAtIndex:preBuffer:)]) {
         [self.datasource hysteriaPlayerAsyncSetUrlForItemAtIndex:index preBuffer:preBuffer];
-    } else {
+    } else if ([self.datasource respondsToSelector:@selector(hysteriaPlayerItemAtIndex:)]) {
+        dispatch_async(HBGQueue, ^{
+            [self setupPlayerWithItem:[self.datasource hysteriaPlayerItemAtIndex:index]  index:index];
+        });
+    
+    }  else {
         NSLog(@"No HysteriaPlayer datasource detected at %li index", (unsigned long) index);
     }
 }
@@ -323,6 +328,21 @@ static dispatch_once_t onceToken;
     });
 }
 
+- (void)setupPlayerWithItem:(AVPlayerItem *)item index:(NSInteger)index
+{
+    if (!item)
+        return;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self setHysteriaIndex:item key:[NSNumber numberWithInteger:index]];
+        if (self.isMemoryCached) {
+            NSMutableArray *playerItems = [NSMutableArray arrayWithArray:self.playerItems];
+            [playerItems addObject:item];
+            self.playerItems = playerItems;
+        }
+        [self insertPlayerItem:item];
+    });
+}
 
 - (BOOL)findSourceInPlayerItems:(NSInteger)index
 {
