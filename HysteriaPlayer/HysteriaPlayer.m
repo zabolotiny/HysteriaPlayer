@@ -274,13 +274,7 @@ static dispatch_once_t onceToken;
     [self willPlayPlayerItemAtIndex:startAt];
     [self.audioPlayer pause];
     [self.audioPlayer removeAllItems];
-    BOOL findInPlayerItems = NO;
-    findInPlayerItems = [self findSourceInPlayerItems:startAt];
-    if (!findInPlayerItems) {
-        [self getSourceURLAtIndex:startAt preBuffer:NO];
-    } else if (self.audioPlayer.currentItem.status == AVPlayerStatusReadyToPlay) {
-        [self.audioPlayer play];
-    }
+    [self getSourceURLAtIndex:startAt preBuffer:NO];
 }
 
 - (NSInteger)hysteriaPlayerItemsCount
